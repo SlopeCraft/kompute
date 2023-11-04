@@ -176,7 +176,7 @@ class Tensor
      *
      * @return Unsigned integer representing the total number of elements
      */
-    uint32_t size();
+    uint32_t size() const;
 
     /**
      * Returns the total size of a single element of the respective data type
@@ -185,7 +185,7 @@ class Tensor
      * @return Unsigned integer representing the memory of a single element of
      * the respective data type.
      */
-    uint32_t dataTypeMemorySize();
+    uint32_t dataTypeMemorySize() const;
 
     /**
      * Returns the total memory size of the data contained by the Tensor object
@@ -194,14 +194,14 @@ class Tensor
      * @return Unsigned integer representing the memory of a single element of
      * the respective data type.
      */
-    uint32_t memorySize();
+    uint32_t memorySize() const;
 
     /**
      * Retrieve the data type of the tensor (host, device, storage)
      *
      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
      */
-    TensorDataTypes dataType();
+    TensorDataTypes dataType() const;
 
     /**
      * Retrieve the raw data via the pointer to the memory that contains the raw
@@ -210,7 +210,7 @@ class Tensor
      *
      * @return Pointer to raw memory containing raw bytes data of Tensor.
      */
-    void* rawData();
+    void* rawData() const;
 
     /**
      * Sets / resets the data of the tensor which is directly done on the GPU
@@ -342,6 +342,13 @@ class TensorT : public Tensor
     }
 
     TensorDataTypes dataType();
+
+    void resize(size_t new_size) {
+      if(this->size()==new_size) {
+        return;
+      }
+      this->rebuild(nullptr,new_size,sizeof(T));
+    }
 };
 
 } // End namespace kp

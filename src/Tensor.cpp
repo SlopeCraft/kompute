@@ -90,7 +90,9 @@ Tensor::rebuild(void* data,
 
     if (this->tensorType() != Tensor::TensorTypes::eStorage) {
         this->mapRawData();
-        memcpy(this->mRawData, data, this->memorySize());
+        if(data!=nullptr) { //allow passing nullptr to resize simply
+          memcpy(this->mRawData, data, this->memorySize());
+        }
     }
 }
 
@@ -108,31 +110,31 @@ Tensor::isInit()
 }
 
 uint32_t
-Tensor::size()
+Tensor::size() const
 {
     return this->mSize;
 }
 
 uint32_t
-Tensor::dataTypeMemorySize()
+Tensor::dataTypeMemorySize() const
 {
     return this->mDataTypeMemorySize;
 }
 
 uint32_t
-Tensor::memorySize()
+Tensor::memorySize() const
 {
     return this->mSize * this->mDataTypeMemorySize;
 }
 
 kp::Tensor::TensorDataTypes
-Tensor::dataType()
+Tensor::dataType() const
 {
     return this->mDataType;
 }
 
 void*
-Tensor::rawData()
+Tensor::rawData() const
 {
     return this->mRawData;
 }
