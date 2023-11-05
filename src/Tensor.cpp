@@ -18,6 +18,14 @@ Tensor::toString(Tensor::TensorDataTypes dt)
             return "eFloat";
         case TensorDataTypes::eDouble:
             return "eDouble";
+        case TensorDataTypes::eChar:
+            return "eChar";
+        case TensorDataTypes::eUnsignedChar:
+            return "eUnsignedChar";
+        case TensorDataTypes::eShort:
+            return "eShort";
+        case TensorDataTypes::eUnsignedShort:
+            return "eUnsignedShort";
         default:
             return "unknown";
     }
@@ -83,15 +91,21 @@ Tensor::rebuild(void* data,
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
         KP_LOG_DEBUG(
           "Kompute Tensor destroying existing resources before rebuild");
+        auto device = this->mDevice;
         this->destroy();
+        if (!this->mDevice) {
+            this->mDevice = device;
+        }
     }
 
+    this->mSize = elementTotalCount;
+    this->mDataTypeMemorySize = elementMemorySize;
     this->allocateMemoryCreateGPUResources();
 
     if (this->tensorType() != Tensor::TensorTypes::eStorage) {
         this->mapRawData();
-        if(data!=nullptr) { //allow passing nullptr to resize simply
-          memcpy(this->mRawData, data, this->memorySize());
+        if (data != nullptr) { // allow passing nullptr to resize simply
+            memcpy(this->mRawData, data, this->memorySize());
         }
     }
 }
@@ -158,8 +172,8 @@ Tensor::mapRawData()
     } else if (this->mTensorType == TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
+        KP_LOG_WARN("Kompute Tensor mapping data not supported on {} tensor",
+                    toString(this->tensorType()));
         return;
     }
 
@@ -169,7 +183,6 @@ Tensor::mapRawData()
     // flush
     this->mRawData = this->mDevice->mapMemory(
       *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-
 }
 
 void
@@ -185,8 +198,8 @@ Tensor::unmapRawData()
     } else if (this->mTensorType == TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
+        KP_LOG_WARN("Kompute Tensor mapping data not supported on {} tensor",
+                    toString(this->tensorType()));
         return;
     }
 
@@ -591,39 +604,39 @@ Tensor::destroy()
     KP_LOG_DEBUG("Kompute Tensor successful destroy()");
 }
 
-template<>
-Tensor::TensorDataTypes
-TensorT<bool>::dataType()
-{
-    return Tensor::TensorDataTypes::eBool;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<int32_t>::dataType()
-{
-    return Tensor::TensorDataTypes::eInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<uint32_t>::dataType()
-{
-    return Tensor::TensorDataTypes::eUnsignedInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<float>::dataType()
-{
-    return Tensor::TensorDataTypes::eFloat;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<double>::dataType()
-{
-    return Tensor::TensorDataTypes::eDouble;
-}
+// template<>
+// Tensor::TensorDataTypes
+// TensorT<bool>::dataType() const
+//{
+//     return Tensor::TensorDataTypes::eBool;
+// }
+//
+// template<>
+// Tensor::TensorDataTypes
+// TensorT<int32_t>::dataType() const
+//{
+//     return Tensor::TensorDataTypes::eInt;
+// }
+//
+// template<>
+// Tensor::TensorDataTypes
+// TensorT<uint32_t>::dataType() const
+//{
+//     return Tensor::TensorDataTypes::eUnsignedInt;
+// }
+//
+// template<>
+// Tensor::TensorDataTypes
+// TensorT<float>::dataType() const
+//{
+//     return Tensor::TensorDataTypes::eFloat;
+// }
+//
+// template<>
+// Tensor::TensorDataTypes
+// TensorT<double>::dataType() const
+//{
+//     return Tensor::TensorDataTypes::eDouble;
+// }
 
 }

@@ -3,6 +3,7 @@
 
 #include "kompute/Core.hpp"
 #include "logger/Logger.hpp"
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -38,6 +39,12 @@ class Tensor
         eUnsignedInt = 2,
         eFloat = 3,
         eDouble = 4,
+        eChar = 5,
+        eUnsignedChar = 6,
+        eShort = 7,
+        eUnsignedShort = 8,
+
+        eUnknown = INT32_MAX
     };
 
     static std::string toString(TensorDataTypes dt);
@@ -320,7 +327,7 @@ class TensorT : public Tensor
 
     T* data() { return (T*)this->mRawData; }
 
-    std::vector<T> vector()
+    std::vector<T> vector() const
     {
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
@@ -341,13 +348,67 @@ class TensorT : public Tensor
         Tensor::setRawData(data.data());
     }
 
-    TensorDataTypes dataType();
+  private:
+    template<typename>
+    static constexpr TensorDataTypes to_data_type()
+    {
+        return TensorDataTypes::eUnknown;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<bool>()
+    {
+        return TensorDataTypes::eBool;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<int32_t>()
+    {
+        return TensorDataTypes::eInt;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<uint32_t>()
+    {
+        return TensorDataTypes::eUnsignedInt;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<float>()
+    {
+        return TensorDataTypes::eFloat;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<double>()
+    {
+        return TensorDataTypes::eDouble;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<int8_t>()
+    {
+        return TensorDataTypes::eChar;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<uint8_t>()
+    {
+        return TensorDataTypes::eUnsignedChar;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<int16_t>()
+    {
+        return TensorDataTypes::eShort;
+    }
+    template<>
+    static constexpr TensorDataTypes to_data_type<uint16_t>()
+    {
+        return TensorDataTypes::eUnsignedShort;
+    }
 
-    void resize(size_t new_size) {
-      if(this->size()==new_size) {
-        return;
-      }
-      this->rebuild(nullptr,new_size,sizeof(T));
+  public:
+    TensorDataTypes dataType() const { return to_data_type<T>(); }
+
+    void resize(size_t new_size)
+    {
+        if (this->size() == new_size) {
+            return;
+        }
+        this->rebuild(nullptr, new_size, sizeof(T));
     }
 };
 
