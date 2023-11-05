@@ -223,6 +223,24 @@ class Manager
      **/
     std::shared_ptr<vk::Instance> getVkInstance() const;
 
+    std::vector<uint32_t>& computeQueueFamilyIndices()
+    {
+        return this->mComputeQueueFamilyIndices;
+    }
+    const std::vector<uint32_t>& computeQueueFamilyIndices() const
+    {
+        return this->mComputeQueueFamilyIndices;
+    }
+
+    std::vector<std::shared_ptr<vk::Queue>>& computeQueues()
+    {
+        return this->mComputeQueues;
+    }
+    const std::vector<std::shared_ptr<vk::Queue>>& computeQueues() const
+    {
+        return this->mComputeQueues;
+    }
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
@@ -251,24 +269,6 @@ class Manager
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
                       uint32_t hysicalDeviceIndex = 0,
                       const std::vector<std::string>& desiredExtensions = {});
-
-    std::vector<uint32_t>& computeQueueFamilyIndices()
-    {
-        return this->mComputeQueueFamilyIndices;
-    }
-    const std::vector<uint32_t>& computeQueueFamilyIndices() const
-    {
-        return this->mComputeQueueFamilyIndices;
-    }
-
-    std::vector<std::shared_ptr<vk::Queue>>& computeQueues()
-    {
-        return this->mComputeQueues;
-    }
-    const std::vector<std::shared_ptr<vk::Queue>>& computeQueues() const
-    {
-        return this->mComputeQueues;
-    }
 };
 
 } // End namespace kp
