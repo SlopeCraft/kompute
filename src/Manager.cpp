@@ -398,7 +398,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
     std::set<std::string> uniqueExtensionNames;
     for (const vk::ExtensionProperties& ext : deviceExtensions) {
-        uniqueExtensionNames.insert(ext.extensionName);
+        uniqueExtensionNames.insert(ext.extensionName.data());
     }
     KP_LOG_DEBUG("Kompute Manager available extensions {}",
                  fmt::join(uniqueExtensionNames, ", "));
@@ -406,6 +406,9 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     for (const std::string& ext : desiredExtensions) {
         if (uniqueExtensionNames.count(ext) != 0) {
             validExtensions.push_back(ext.c_str());
+        } else {
+            KP_LOG_WARN("Kompute Manager found invalid extension named {}",
+                        ext);
         }
     }
     if (desiredExtensions.size() != validExtensions.size()) {
