@@ -349,55 +349,37 @@ class TensorT : public Tensor
     }
 
   private:
-    template<typename>
-    static constexpr TensorDataTypes to_data_type()
-    {
-        return TensorDataTypes::eUnknown;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<bool>()
-    {
+    template<typename U>
+    static constexpr TensorDataTypes to_data_type() {
+      if (std::is_same_v<U,bool>) {
         return TensorDataTypes::eBool;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<int32_t>()
-    {
+      }
+      if (std::is_same_v<U,int32_t>) {
         return TensorDataTypes::eInt;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<uint32_t>()
-    {
+      }
+      if (std::is_same_v<U,uint32_t>) {
         return TensorDataTypes::eUnsignedInt;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<float>()
-    {
+      }
+      if (std::is_same_v<U,float>) {
         return TensorDataTypes::eFloat;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<double>()
-    {
+      }
+      if (std::is_same_v<U,double>) {
         return TensorDataTypes::eDouble;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<int8_t>()
-    {
+      }
+      if (std::is_same_v<U,int8_t >) {
         return TensorDataTypes::eChar;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<uint8_t>()
-    {
+      }
+      if (std::is_same_v<U,uint8_t>) {
         return TensorDataTypes::eUnsignedChar;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<int16_t>()
-    {
+      }
+      if (std::is_same_v<U,int16_t>) {
         return TensorDataTypes::eShort;
-    }
-    template<>
-    static constexpr TensorDataTypes to_data_type<uint16_t>()
-    {
+      }
+      if (std::is_same_v<U,uint16_t>) {
         return TensorDataTypes::eUnsignedShort;
+      }
+
+      return TensorDataTypes::eUnknown;
     }
 
   public:
