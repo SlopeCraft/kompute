@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <type_traits>
 
 namespace kp {
 
@@ -351,31 +352,31 @@ class TensorT : public Tensor
   private:
     template<typename U>
     static constexpr TensorDataTypes to_data_type() {
-      if (std::is_same_v<U,bool>) {
+      if (std::is_same<U,bool>::value) {
         return TensorDataTypes::eBool;
       }
-      if (std::is_same_v<U,int32_t>) {
+      if (std::is_same<U,int32_t>::value) {
         return TensorDataTypes::eInt;
       }
-      if (std::is_same_v<U,uint32_t>) {
+      if (std::is_same<U,uint32_t>::value) {
         return TensorDataTypes::eUnsignedInt;
       }
-      if (std::is_same_v<U,float>) {
+      if (std::is_same<U,float>::value) {
         return TensorDataTypes::eFloat;
       }
-      if (std::is_same_v<U,double>) {
+      if (std::is_same<U,double>::value) {
         return TensorDataTypes::eDouble;
       }
-      if (std::is_same_v<U,int8_t >) {
+      if (std::is_same<U,int8_t>::value) {
         return TensorDataTypes::eChar;
       }
-      if (std::is_same_v<U,uint8_t>) {
+      if (std::is_same<U,uint8_t>::value) {
         return TensorDataTypes::eUnsignedChar;
       }
-      if (std::is_same_v<U,int16_t>) {
+      if (std::is_same<U,int16_t>::value) {
         return TensorDataTypes::eShort;
       }
-      if (std::is_same_v<U,uint16_t>) {
+      if (std::is_same<U,uint16_t>::value) {
         return TensorDataTypes::eUnsignedShort;
       }
 
